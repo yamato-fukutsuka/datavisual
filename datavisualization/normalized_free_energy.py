@@ -1,0 +1,40 @@
+##2番までの項目の説明に使用する図
+# 数学的処理を行った際に、出てきた数式を視覚化したもの
+##図3の(a)(b)(c)を表したもの
+
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+# 正規化された自由エネルギー関数
+def normalized_free_energy(Q, q, t, e):
+    a = (1 + t) * Q**2 + t * q**2 + Q**4 + q**4 + 6 * Q**2 * q**2 - e * Q
+    return a
+
+# Qとqの範囲を定義
+Q = np.linspace(-1.0, 1.0, 400)
+q = np.linspace(-1.15, 1.15, 400)
+
+# Qとqのメッシュグリッドを生成
+Q, q = np.meshgrid(Q, q)
+
+# 温度と外部場の値を設定
+t_values = [-1,0, -1.5,-2.0, 2.0]  # 温度の例
+e_values = [0]
+
+# 図を描画
+fig = plt.figure(figsize=(20, 20))
+
+# 異なる温度と外部場の値に対して自由エネルギーの等高線図を生成
+for i, t in enumerate(t_values):
+    for j, e in enumerate(e_values):
+        ax = fig.add_subplot(len(t_values), len(e_values), i * len(e_values) + j + 1, projection='3d')
+        a = normalized_free_energy(Q, q, t, e)
+        ax.contour3D(Q, q, a, 50, cmap='viridis')
+        ax.set_title(f't={t}, e={e}')
+        ax.set_xlabel('Q')
+        ax.set_ylabel('q')
+        ax.set_zlabel('a')
+
+plt.tight_layout()
+plt.show()
